@@ -1,3 +1,7 @@
+# Hourglass9CN
+
+Hounrglass9 汉化版
+
 # Hourglass9
 _Noob friendly, safe, arm9loaderhax only NAND dumper & restorer for the 3DS console_
 

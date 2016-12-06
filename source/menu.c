@@ -7,6 +7,8 @@
 #endif
 #include "decryptor/nand.h"
 
+#include "string_zh.h"
+
 
 #ifdef LOG_FILE
 u32 ScrollOutput()
@@ -64,12 +66,12 @@ u32 UnmountSd()
     DeinitFS();
     #else
     DebugClear();
-    Debug("Unmounting SD card...");
+    Debug(STR_UNMOUNTSD_1);
     DeinitFS();
-    Debug("SD is unmounted, you may remove it now.");
-    Debug("Put the SD card back in before pressing B!");
+    Debug(STR_UNMOUNTSD_2);
+    Debug(STR_UNMOUNTSD_3);
     Debug("");
-    Debug("(B to return, START to reboot)");
+    Debug(STR_B_START);
     #endif
     while (true) {
         pad_state = InputWait();
@@ -94,20 +96,20 @@ void DrawMenu(MenuInfo* currMenu, u32 index, bool fullDraw, bool subMenu)
         DrawStringF(menublock_x0, menublock_y0 - 20, top_screen, "%s", currMenu->name);
         DrawStringF(menublock_x0, menublock_y0 - 10, top_screen, "==============================");
         DrawStringF(menublock_x0, menublock_y1 +  0, top_screen, "==============================");
-        DrawStringF(menublock_x0, menublock_y1 + 10, top_screen, (subMenu) ? "A: Choose  B: Return" : "A: Choose");
-        DrawStringF(menublock_x0, menublock_y1 + 20, top_screen, "SELECT : Unmount SD");
-        DrawStringF(menublock_x0, menublock_y1 + 30, top_screen, "START  : Reboot");
-        DrawStringF(menublock_x0, menublock_y1 + 40, top_screen, "START+\x1B: Poweroff");
-        DrawStringF(menublock_x1, SCREEN_HEIGHT - 20, top_screen, "SD storage: %lluMB / %lluMB", RemainingStorageSpace() / (1024*1024), TotalStorageSpace() / (1024*1024));
+        DrawStringF(menublock_x0, menublock_y1 + 10, top_screen, (subMenu) ? STR_CHOOSE_RETURN : STR_CHOOSE);
+        DrawStringF(menublock_x0, menublock_y1 + 20, top_screen, STR_SELECT);
+        DrawStringF(menublock_x0, menublock_y1 + 30, top_screen, STR_START);
+        DrawStringF(menublock_x0, menublock_y1 + 40, top_screen, STR_START_B);
+        DrawStringF(menublock_x1, SCREEN_HEIGHT - 20, top_screen, STR_SD_STORAGE, RemainingStorageSpace() / (1024*1024), TotalStorageSpace() / (1024*1024));
         DrawStringF(menublock_x1, SCREEN_HEIGHT - 30, top_screen, "EmuNAND: %s",
-            (emunand_state == EMUNAND_NOT_READY) ? "SD not ready" :
+            (emunand_state == EMUNAND_NOT_READY) ? STR_SD_NOT_READY :
             (emunand_state == EMUNAND_GATEWAY) ? "GW EmuNAND" : 
-            (emunand_state == EMUNAND_REDNAND) ? "RedNAND" : "SD is ready" );
-        DrawStringF(menublock_x1, SCREEN_HEIGHT - 30, top_screen, "Work directory: %s", GetWorkDir());
+            (emunand_state == EMUNAND_REDNAND) ? "RedNAND" : STR_SD_READY );
+        DrawStringF(menublock_x1, SCREEN_HEIGHT - 30, top_screen, STR_WORKDIR, GetWorkDir());
     }
     
     if (!top_screen)
-        DrawStringF(10, 10, true, "Selected: %-*.*s", 32, 32, currMenu->entries[index].name);
+        DrawStringF(10, 10, true, STR_SELECTED_1, 32, 32, currMenu->entries[index].name);
         
     for (u32 i = 0; i < currMenu->n_entries; i++) { // draw menu entries / selection []
         char* name = currMenu->entries[i].name;
@@ -139,14 +141,14 @@ u32 ProcessEntry(MenuEntry* entry)
         LoadThemeGfx((emunand) ? GFX_DANGER_E : GFX_DANGER_S, false);
         #endif
         DebugClear();
-        Debug("You selected \"%s\".", entry->name);
-        DebugColor(entryColor, "This feature writes to the %s.", (emunand) ? "EmuNAND" : "SysNAND");
-        DebugColor(entryColor, "Data will be overwriten, keep backups!");
+        Debug(STR_YOU_SELECTED, entry->name);
+        DebugColor(entryColor, STR_FEATURE, (emunand) ? STR_EMUNAND : STR_SYSNAND);
+        DebugColor(entryColor, STR_DATA_OVERWRITTEN);
         Debug("");
-        Debug("If you wish to proceed, enter:");
-        Debug((emunand) ? "<Left>, <Right>, <Down>, <Up>, <A>" : "<Left>, <Up>, <Right>, <Up>, <A>");
+        Debug(STR_PROCEED);
+        Debug((emunand) ? STR_PROCEED_KEY_EMU : STR_PROCEED_KEY_SYS);
         Debug("");
-        Debug("(B to return, START to reboot)");
+        Debug(STR_B_START);
         while (true) {
             ShowProgress(unlockLvl, unlockLvlMax);
             if (unlockLvl == unlockLvlMax)
@@ -171,11 +173,11 @@ u32 ProcessEntry(MenuEntry* entry)
     LoadThemeGfx(GFX_PROGRESS, false);
     #endif
     DebugClear();
-    DebugColor(entryColor, "Selected: [%s]", entry->name);
+    DebugColor(entryColor, STR_SELECTED_2, entry->name);
     res = (SetNand(emunand, nand_force) == 0) ? (*(entry->function))(entry->param) : 1;
-    DebugColor((res == 0) ? COLOR_GREEN : COLOR_RED, "%s: %s!", entry->name, (res == 0) ? "succeeded" : "failed");
+    DebugColor((res == 0) ? COLOR_GREEN : COLOR_RED, "%s: %s!", entry->name, (res == 0) ? STR_SUCCESS : STR_FAIL);
     Debug("");
-    Debug("Press B to return, START to reboot.");
+    Debug(STR_B_START);
     #ifdef USE_THEME
     LoadThemeGfx((res == 0) ? GFX_DONE : GFX_FAILED, false);
     #endif
@@ -234,7 +236,7 @@ u32 ProcessMenu(MenuInfo* info, u32 n_entries_main)
         }
         mainMenu.n_entries = n_entries_main;
         #ifndef BUILD_NAME
-        mainMenu.name = "Hourglass9 Main Menu";
+        mainMenu.name = "Hourglass9中文版";
         #else
         mainMenu.name = BUILD_NAME;
         #endif

@@ -4,6 +4,8 @@
 #include "fatfs/ff.h"
 #include "hid.h"
 
+#include "string_zh.h"
+
 static FATFS fs;
 static FIL file;
 static DIR dir;
@@ -42,13 +44,13 @@ const char* GetWorkDir()
 bool DebugCheckCancel(void)
 {
     if (CheckButton(BUTTON_B)) {
-        DebugColor(COLOR_ASK, "Press <A> to cancel operation");
+        DebugColor(COLOR_ASK, STR_A_CANCEL);
         while (CheckButton(BUTTON_B)); // make sure <B> is no more pressed
         if (InputWait() & BUTTON_A) {
-            DebugColor(COLOR_ASK, "(cancelled by user)");
+            DebugColor(COLOR_ASK, STR_CANCEL_USER);
             return true;
         } else {
-            Debug("Continuing operation...");
+            Debug(STR_CONTINUE_OPERATE);
         }
     }
     return false;
@@ -57,7 +59,7 @@ bool DebugCheckCancel(void)
 bool DebugCheckFreeSpace(size_t required)
 {
     if (required > RemainingStorageSpace()) {
-        Debug("Not enough space left on SD card");
+        Debug(STR_NO_SPACE_SD);
         return false;
     }
     
@@ -83,9 +85,9 @@ bool FileOpen(const char* path)
 
 bool DebugFileOpen(const char* path)
 {
-    Debug("Opening %s ...", path);
+    Debug(STR_OPENING_S, path);
     if (!FileOpen(path)) {
-        Debug("Could not open %s", path);
+        Debug(STR_COULD_NOT_OPEN, path);
         return false;
     }
     
@@ -107,9 +109,9 @@ bool FileCreate(const char* path, bool truncate)
 }
 
 bool DebugFileCreate(const char* path, bool truncate) {
-    Debug("%s %s ...", truncate ? "Creating" : "Opening", path);
+    Debug("%s %s ...", truncate ? STR_CREATING : STR_OPENING, path);
     if (!FileCreate(path, truncate)) {
-        Debug("Could not create %s", path);
+        Debug(STR_COULD_NOT_CREATE, path);
         return false;
     }
 
@@ -181,7 +183,7 @@ size_t FileRead(void* buf, size_t size, size_t foffset)
 bool DebugFileRead(void* buf, size_t size, size_t foffset) {
     size_t bytesRead = FileRead(buf, size, foffset);
     if(bytesRead != size) {
-        Debug("File too small or SD failure");
+        Debug(STR_FILE_SMALL);
         return false;
     }
     // NOT enabled -> dangerous on NAND writes
@@ -207,7 +209,7 @@ bool DebugFileWrite(void* buf, size_t size, size_t foffset)
 {
     size_t bytesWritten = FileWrite(buf, size, foffset);
     if(bytesWritten != size) {
-        Debug("SD failure or SD full");
+        Debug(STR_SD_FAILURE);
         return false;
     }
     if (DebugCheckCancel())
@@ -233,9 +235,9 @@ bool DirOpen(const char* path)
 
 bool DebugDirOpen(const char* path)
 {
-    Debug("Opening %s ...", path);
+    Debug(STR_OPENING_S, path);
     if (!DirOpen(path)) {
-        Debug("Could not open %s!", path);
+        Debug(STR_COULD_NOT_OPEN, path);
         return false;
     }
     

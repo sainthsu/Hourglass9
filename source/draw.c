@@ -14,6 +14,93 @@
 #include "theme.h"
 #endif
 
+ssize_t
+decode_utf8(u32      *out,
+            const u8 *in)
+{
+  u8 code1, code2, code3, code4;
+
+  code1 = *in++;
+  if(code1 < 0x80)
+  {
+    /* 1-byte sequence */
+    *out = code1;
+    return 1;
+  }
+  else if(code1 < 0xC2)
+  {
+    return -1;
+  }
+  else if(code1 < 0xE0)
+  {
+    /* 2-byte sequence */
+    code2 = *in++;
+    if((code2 & 0xC0) != 0x80)
+    {
+      return -1;
+    }
+
+    *out = (code1 << 6) + code2 - 0x3080;
+    return 2;
+  }
+  else if(code1 < 0xF0)
+  {
+    /* 3-byte sequence */
+    code2 = *in++;
+    if((code2 & 0xC0) != 0x80)
+    {
+      return -1;
+    }
+    if(code1 == 0xE0 && code2 < 0xA0)
+    {
+      return -1;
+    }
+
+    code3 = *in++;
+    if((code3 & 0xC0) != 0x80)
+    {
+      return -1;
+    }
+
+    *out = (code1 << 12) + (code2 << 6) + code3 - 0xE2080;
+    return 3;
+  }
+  else if(code1 < 0xF5)
+  {
+    /* 4-byte sequence */
+    code2 = *in++;
+    if((code2 & 0xC0) != 0x80)
+    {
+      return -1;
+    }
+    if(code1 == 0xF0 && code2 < 0x90)
+    {
+      return -1;
+    }
+    if(code1 == 0xF4 && code2 >= 0x90)
+    {
+      return -1;
+    }
+
+    code3 = *in++;
+    if((code3 & 0xC0) != 0x80)
+    {
+      return -1;
+    }
+
+    code4 = *in++;
+    if((code4 & 0xC0) != 0x80)
+    {
+      return -1;
+    }
+
+    *out = (code1 << 18) + (code2 << 12) + (code3 << 6) + code4 - 0x3C82080;
+    return 4;
+  }
+
+  return -1;
+}
+
 static char debugstr[DBG_N_CHARS_X * DBG_N_CHARS_Y] = { 0 };
 static u32 debugcol[DBG_N_CHARS_Y] = { DBG_COLOR_FONT };
 
@@ -35,15 +122,43 @@ void ClearScreenFull(bool clear_top, bool clear_bottom)
         ClearScreen(BOT_SCREEN, SCREEN_WIDTH_BOT, STD_COLOR_BG);
 }
 
-void DrawCharacter(u8* screen, int character, int x, int y, int color, int bgcolor)
+int DrawCharacter(u8* screen, u32 character, int x, int y, int color, int bgcolor)
 {
-    for (int yy = 0; yy < FONT_HEIGHT; yy++) {
-        int xDisplacement = (x * BYTES_PER_PIXEL * SCREEN_HEIGHT);
-        int yDisplacement = ((SCREEN_HEIGHT - (y + yy) - 1) * BYTES_PER_PIXEL);
-        u8* screenPos = screen + xDisplacement + yDisplacement;
+#ifdef FONT_UNICODE
+	FontIndex index;
+	if(character >= 0xf900) {
+		index = indies[character-0x2100];
+	} else {
+		index = indies[character];
+	}
+	int fontWidth = index.width;
+	u8* data = index.data;
+#else
+	int fontWidth = FONT_WIDTH;
+#endif
 
-        u8 charPos = font[character * FONT_HEIGHT + yy];
-        for (int xx = 7; xx >= (8 - FONT_WIDTH); xx--) {
+	u8 charPos;
+	int xDisplacement;
+	int yDisplacement;
+	u8* screenPos;
+	int col = fontWidth/8;
+	int end = 0;
+	if(fontWidth<8){
+		end = 8 - fontWidth;
+	}
+
+    for (int yy = 0; yy < FONT_HEIGHT; yy++) {
+		xDisplacement = (x * BYTES_PER_PIXEL * SCREEN_HEIGHT);
+        yDisplacement = ((SCREEN_HEIGHT - (y + yy) - 1) * BYTES_PER_PIXEL);
+        screenPos = screen + xDisplacement + yDisplacement;
+
+		for(int c = 0; c < col; c++) {
+#ifdef FONT_UNICODE
+		charPos = data[FONT_HEIGHT * yy + c];
+#else
+        charPos = font[character * FONT_HEIGHT + yy];
+#endif
+        for (int xx = 7; xx >= end; xx--) {
             if ((charPos >> xx) & 1) {
                 *(screenPos + 0) = color >> 16;  // B
                 *(screenPos + 1) = color >> 8;   // G
@@ -55,13 +170,29 @@ void DrawCharacter(u8* screen, int character, int x, int y, int color, int bgcol
             }
             screenPos += BYTES_PER_PIXEL * SCREEN_HEIGHT;
         }
+		}
     }
+
+	return fontWidth;
 }
 
 void DrawString(u8* screen, const char *str, int x, int y, int color, int bgcolor)
 {
-    for (size_t i = 0; i < strlen(str); i++)
-        DrawCharacter(screen, str[i], x + i * FONT_WIDTH, y, color, bgcolor);
+	size_t len = strlen(str);
+	u32 character;
+	ssize_t  units = 0;
+	int currentX = x;
+
+    for (size_t i = 0; i < len ; i++) {
+		units = decode_utf8(&character,str);
+		if(units == -1) break;
+		str += units;
+		if(character>=0xd800 && i<0xf900) {
+			continue;
+		}else {
+        	currentX += DrawCharacter(screen, str[i], currentX, y, color, bgcolor);
+		}
+	}
 }
 
 void DrawStringF(int x, int y, bool use_top, const char *format, ...)

@@ -1,33 +1,92 @@
 #pragma once
 
-const static char* STR_MAINMENU_1 = "系统分区备份/还原";
-const statuc char* STR_MAINMENU_2 = "虚拟分区备份/还原";
-const statuc char* STR_MAINMENU_3 = "游戏卡带导出";
-const statuc char* STR_MAINMENU_4 = "杂项";
-const statuc char* STR_MAINMENU_5 = "验证NAND导出";
+//main.c
+#define STR_MAINMENU_1  "系统分区备份/还原"
+#define STR_MAINMENU_2  "虚拟分区备份/还原"
+#define STR_MAINMENU_3  "游戏卡带导出"
+#define STR_MAINMENU_4  "杂项"
+#define STR_MAINMENU_5  "验证NAND导出"
 
-const statuc char* STR_SYSNAND_OPTIONS = "系统分区备份/还原选项";
-const statuc char* STR_SYSNAND_OPTIONS_1 = "系统分区备份";
-const statuc char* STR_SYSNAND_OPTIONS_2 = "系统分区还原(保留a9lh)";
-const statuc char* STR_SYSNAND_OPTIONS_3 = "安全使用须知导出";
-const statuc char* STR_SYSNAND_OPTIONS_4 = "安全使用须知注入";
+#define STR_SYSNAND_OPTIONS  "系统分区备份/还原选项"
+#define STR_SYSNAND_OPTIONS_1  "系统分区备份"
+#define STR_SYSNAND_OPTIONS_2  "系统分区还原(保留a9lh)"
+#define STR_SYSNAND_OPTIONS_3  "安全使用须知导出"
+#define STR_SYSNAND_OPTIONS_4  "安全使用须知注入"
 
-const statuc char* STR_EMUNAND_OPTIONS = "虚拟分区备份/还原选项";
-const statuc char* STR_EMUNAND_OPTIONS_1 = "虚拟分区备份";
-const statuc char* STR_EMUNAND_OPTIONS_2 = "虚拟分区还原";
+#define STR_EMUNAND_OPTIONS  "虚拟分区备份/还原选项"
+#define STR_EMUNAND_OPTIONS_1  "虚拟分区备份"
+#define STR_EMUNAND_OPTIONS_2  "虚拟分区还原"
 
-const statuc char* STR_GAMECART_OPTIONS = "游戏卡带导出选项";
-const statuc char* STR_GAMECART_OPTIONS_1 = "卡带导出(完全)";
-const statuc char* STR_GAMECART_OPTIONS_2 = "卡带导出(精简)";
-const statuc char* STR_GAMECART_OPTIONS = "导出解密卡带(完全)";
-const statuc char* STR_GAMECART_OPTIONS = "导出解密卡带(精简)";
-const statuc char* STR_GAMECART_OPTIONS = "卡带导出成CIA";
-const statuc char* STR_GAMECART_OPTIONS = "导出卡带私有头部";
+#define STR_GAMECART_OPTIONS  "游戏卡带导出选项"
+#define STR_GAMECART_OPTIONS_1  "卡带导出(完全)"
+#define STR_GAMECART_OPTIONS_2  "卡带导出(精简)"
+#define STR_GAMECART_OPTIONS_3  "导出解密卡带(完全)"
+#define STR_GAMECART_OPTIONS_4  "导出解密卡带(精简)"
+#define STR_GAMECART_OPTIONS_5  "卡带导出成CIA"
+#define STR_GAMECART_OPTIONS_6  "导出卡带私有头部"
 
-const statuc char* STR_MISC_OPTIONS = "杂项选项";
-const statuc char* STR_MISC_OPTIONS_1 = "系统";
-const statuc char* STR_MISC_OPTIONS_2 = "虚拟";
-const statuc char* STR_MISC_OPTIONS_3 = "GBA VC存档导出";
-const statuc char* STR_MISC_OPTIONS_4 = "GBA VC存档注入";
-const statuc char* STR_MISC_OPTIONS_5 = "生成NCCH";
-const statuc char* STR_MISC_OPTIONS_6 = "系统信息";
+#define STR_MISC_OPTIONS  "杂项选项"
+#define STR_MISC_OPTIONS_1  "系统分区游戏转CIA"
+#define STR_MISC_OPTIONS_2  "虚拟分区游戏转CIA"
+#define STR_MISC_OPTIONS_3  "GBA VC存档导出"
+#define STR_MISC_OPTIONS_4  "GBA VC存档注入"
+#define STR_MISC_OPTIONS_5  "生成NCCH"
+#define STR_MISC_OPTIONS_6  "系统信息"
+
+#define STR_COUNT_MENUS  "计算 %u 子菜单和 %u 功能"
+#define STR_INITIALIZING  "初始化中，按L+R停止"
+#define STR_CHECKING_A9  "检测arm9loaderhax... %s"
+#define STR_SUCCESS  "成功"
+#define STR_FAIL  "失败"
+#define STR_INIT_SUCCESS  "初始化SD卡...成功"
+#define STR_INIT_FINAL  "结束初始化中..."
+#define STR_INIT_FAIL  "初始化SD卡...失败"
+#define STR_INIT  "初始化: %s"
+
+#define STR_A_TO  "(按A: %s)"
+#define STR_EXIT  "退出"
+#define STR_CONTINUE  "继续"
+
+//theme.c
+#define STR_NOT_FIND "未找到: %s"
+#define STR_SDCARD "SD卡: %lluMB/%lluMB & %s"
+#define STR_WORKDIR  "工作目录: %s"
+
+//menu.c
+#define STR_UNMOUNTSD_1  "正在卸载SD卡..."
+#define STR_UNMOUNTSD_2  "已卸载SD卡，你可以移除它了."
+#define STR_UNMOUNTSD_3  "在按B之前请插回SD卡"
+#define STR_B_START  "(按B返回,START重启)"
+
+#define STR_CHOOSE_RETURN  "A:选择 B:返回"
+#define STR_CHOOSE  "A:选择"
+#define STR_SELECT  "SELECT:卸载SD卡"
+#define STR_START  "START:重启"
+#define STR_START_B  "START+\x1B:关机"
+#define STR_SD_STORAGE  "SD卡容量: %lluMB / %lluMB"
+#define STR_SD_NOT_READY  "SD未就绪"
+#define STR_SD_READY  "SD已就绪"
+
+#define STR_SELECTED_1  "选中: %-*.*s"
+#define STR_SELECTED_2  "选中: [%s]"
+#define STR_YOU_SELECTED  "你选中了 \"%s\"."
+#define STR_FEATURE  "这个特征将写入%s."
+#define STR_EMUNAND  " 虚拟分区"
+#define STR_SYSNAND  " 系统分区"
+#define STR_DATA_OVERWRITTEN  "数据将会被覆写，请保存好备份!"
+#define STR_PROCEED  "如果你想继续，请输入:"
+#define STR_PROCEED_KEY_EMU  "<左>, <右>, <下>, <上>, <A>"
+#define STR_PROCEED_KEY_SYS  "<左>, <上>, <右>, <上>, <A>"
+
+//fs.c
+#define STR_A_CANCEL  "按<A>取消操作"
+#define STR_CANCEL_USER  "(被用户取消)"
+#define STR_CONTINUE_OPERATE  "继续操作..."
+#define STR_NO_SPACE_SD  "SD卡无足够空间"
+#define STR_OPENING_S  "打开 %s 中..."
+#define STR_CREATING  "创建"
+#define STR_OPENING  "打开"
+#define STR_COULD_NOT_OPEN  "无法打开 %s!"
+#define STR_COULD_NOT_CREATE  "无法创建 %s"
+#define STR_FILE_SMALL  "文件太小或SD卡错误"
+#define STR_SD_FAILURE  "SD卡失败或已满"

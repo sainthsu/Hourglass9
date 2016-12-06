@@ -16,7 +16,7 @@ include $(DEVKITARM)/ds_rules
 # INCLUDES is a list of directories containing header files
 # SPECS is the directory containing the important build and link files
 #---------------------------------------------------------------------------------
-export TARGET	:=	Hourglass9
+export TARGET	:=	Hourglass9CN
 BUILD		:=	build
 SOURCES		:=	source source/fatfs source/decryptor source/gamecart
 DATA		:=	data
@@ -25,7 +25,8 @@ INCLUDES	:=	source source/font source/fatfs
 #---------------------------------------------------------------------------------
 # THEME: if set to anything, name of the themes file folder inside resources
 #---------------------------------------------------------------------------------
-THEME	:=	
+THEME	:=
+FONT    := UNICODE
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -53,6 +54,8 @@ else ifeq ($(FONT),ACORN)
 CFLAGS	+=	-DFONT_ACORN
 else ifeq ($(FONT),GB)
 CFLAGS	+=	-DFONT_GB
+else ifeq ($(FONT),UNICODE)
+CFLAGS  +=  -DFONT_UNICODE
 else
 CFLAGS	+=	-DFONT_6X10
 endif

@@ -13,6 +13,8 @@
 #include "decryptor/selftest.h"
 #include "bottomlogo_bgr.h"
 
+#include "string_zh.h"
+
 #define SUBMENU_START 1
 
 MenuInfo menu[] =
@@ -24,51 +26,51 @@ MenuInfo menu[] =
         VERSION_NAME, 5,
         #endif
         {
-            { "SysNAND Backup/Restore...",    NULL,                   SUBMENU_START + 0 },
-            { "EmuNAND Backup/Restore...",    NULL,                   SUBMENU_START + 1 },
-            { "Gamecart Dumper...",           NULL,                   SUBMENU_START + 2 },
-            { "Miscellaneous...",             NULL,                   SUBMENU_START + 3 },
-            { "Validate NAND Dump",           &ValidateNandDump,      0 }
+            { STR_MAINMENU_1,    NULL,                   SUBMENU_START + 0 },
+            { STR_MAINMENU_2,    NULL,                   SUBMENU_START + 1 },
+            { STR_MAINMENU_3,           NULL,                   SUBMENU_START + 2 },
+            { STR_MAINMENU_4,             NULL,                   SUBMENU_START + 3 },
+            { STR_MAINMENU_5,           &ValidateNandDump,      0 }
         }
     },
     {
-        "SysNAND Backup/Restore Options", 4, // ID 0
+        STR_SYSNAND_OPTIONS, 4, // ID 0
         {
-            { "SysNAND Backup",               &DumpNand,              NB_MINSIZE },
-            { "SysNAND Restore (keep a9lh)",  &RestoreNand,           N_NANDWRITE | NR_KEEPA9LH },
-            { "Health&Safety Dump",           &DumpHealthAndSafety,   0 },
-            { "Health&Safety Inject",         &InjectHealthAndSafety, N_NANDWRITE }
+            { STR_SYSNAND_OPTIONS_1,               &DumpNand,              NB_MINSIZE },
+            { STR_SYSNAND_OPTIONS_2,  &RestoreNand,           N_NANDWRITE | NR_KEEPA9LH },
+            { STR_SYSNAND_OPTIONS_3,           &DumpHealthAndSafety,   0 },
+            { STR_SYSNAND_OPTIONS_4,         &InjectHealthAndSafety, N_NANDWRITE }
         }
     },
     {
-        "EmuNAND Backup/Restore Options", 4, // ID 1
+        STR_EMUNAND_OPTIONS, 4, // ID 1
         {
-            { "EmuNAND Backup",               &DumpNand,              N_EMUNAND | NB_MINSIZE },
-            { "EmuNAND Restore",              &RestoreNand,           N_NANDWRITE | N_EMUNAND | N_FORCEEMU },
-            { "Health&Safety Dump",           &DumpHealthAndSafety,   N_EMUNAND },
-            { "Health&Safety Inject",         &InjectHealthAndSafety, N_NANDWRITE | N_EMUNAND }
+            { STR_EMUNAND_OPTIONS_1,               &DumpNand,              N_EMUNAND | NB_MINSIZE },
+            { STR_EMUNAND_OPTIONS_2,              &RestoreNand,           N_NANDWRITE | N_EMUNAND | N_FORCEEMU },
+            { STR_SYSNAND_OPTIONS_3,           &DumpHealthAndSafety,   N_EMUNAND },
+            { STR_SYSNAND_OPTIONS_4,         &InjectHealthAndSafety, N_NANDWRITE | N_EMUNAND }
         }
     },
     {
-        "Gamecart Dumper Options", 6, // ID 2
+        STR_GAMECART_OPTIONS, 6, // ID 2
         {
-            { "Dump Cart (full)",             &DumpGameCart,          0 },
-            { "Dump Cart (trim)",             &DumpGameCart,          CD_TRIM },
-            { "Dump & Decrypt Cart (full)",   &DumpGameCart,          CD_DECRYPT },
-            { "Dump & Decrypt Cart (trim)",   &DumpGameCart,          CD_DECRYPT | CD_TRIM },
-            { "Dump Cart to CIA",             &DumpGameCart,          CD_DECRYPT | CD_MAKECIA },
-            { "Dump Private Header",          &DumpPrivateHeader,     0 }
+            { STR_GAMECART_OPTIONS_1,             &DumpGameCart,          0 },
+            { STR_GAMECART_OPTIONS_2,             &DumpGameCart,          CD_TRIM },
+            { STR_GAMECART_OPTIONS_3,   &DumpGameCart,          CD_DECRYPT },
+            { STR_GAMECART_OPTIONS_4,   &DumpGameCart,          CD_DECRYPT | CD_TRIM },
+            { STR_GAMECART_OPTIONS_5,             &DumpGameCart,          CD_DECRYPT | CD_MAKECIA },
+            { STR_GAMECART_OPTIONS_6,          &DumpPrivateHeader,     0 }
         }
     },
     {
-        "Miscellaneous Options", 6, // ID 3
+        STR_MISC_OPTIONS, 6, // ID 3
         {
-            { "SysNAND title to CIA",         &ConvertSdToCia,        GC_CIA_DEEP },
-            { "EmuNAND title to CIA",         &ConvertSdToCia,        GC_CIA_DEEP | N_EMUNAND },
-            { "GBA VC Save Dump",             &DumpGbaVcSave,         0 },
-            { "GBA VC Save Inject",           &InjectGbaVcSave,       N_NANDWRITE },
-            { "NCCH Padgen",                  &NcchPadgen,            0 },
-            { "System Info",                  &SystemInfo,            0 }
+            { STR_MISC_OPTIONS_1,         &ConvertSdToCia,        GC_CIA_DEEP },
+            { STR_MISC_OPTIONS_2,         &ConvertSdToCia,        GC_CIA_DEEP | N_EMUNAND },
+            { STR_MISC_OPTIONS_3,             &DumpGbaVcSave,         0 },
+            { STR_MISC_OPTIONS_4,           &InjectGbaVcSave,       N_NANDWRITE },
+            { STR_MISC_OPTIONS_5,                  &NcchPadgen,            0 },
+            { STR_MISC_OPTIONS_6,                  &SystemInfo,            0 }
         }
     },
     {
@@ -115,20 +117,20 @@ u32 InitializeH9()
             for (u32 e = 0; e < menu[m].n_entries; e++)
                 n_features += (menu[m].entries[e].function) ? 1 : 0;
         }
-        Debug("Counting %u submenus and %u features", n_submenus, n_features);
+        Debug(STR_COUNT_MENUS, n_submenus, n_features);
     }
     
-    Debug("Initializing, hold L+R to pause");
+    Debug(STR_INITIALIZING);
     Debug("");    
     
     if ((*(vu32*) 0x101401C0) != 0)
         errorlevel = 2;
-    Debug("Checking arm9loaderhax... %s", (*(vu32*) 0x101401C0) ? "failed" : "success");
+    Debug(STR_CHECKING_A9, (*(vu32*) 0x101401C0) ? STR_FAIL : STR_SUCCESS);
     if (InitFS()) {
-        Debug("Initializing SD card... success");
+        Debug(STR_INIT_SUCCESS);
         FileGetData("h9logo.bin", BOT_SCREEN, 320 * 240 * 3, 0);
         Debug("Build: %s", BUILD_NAME);
-        Debug("Work directory: %s", GetWorkDir());
+        Debug(STR_WORKDIR, GetWorkDir());
         if (SetupTwlKey0x03() != 0) // TWL KeyX / KeyY
             errorlevel = 2;
         if ((GetUnitPlatform() == PLATFORM_N3DS) && (SetupCtrNandKeyY0x05() != 0))
@@ -141,17 +143,17 @@ u32 InitializeH9()
             errorlevel = (errorlevel < 1) ? 1 : errorlevel;
         if (SetupAgbCmacKeyY0x24()) // AGBSAVE CMAC KeyY
             errorlevel = (errorlevel < 1) ? 1 : errorlevel;
-        Debug("Finalizing Initialization...");
+        Debug(STR_INIT_FINAL);
         RemainingStorageSpace();
     } else {
-        Debug("Initializing SD card... failed");
+        Debug(STR_INIT_FAIL);
             errorlevel = 2;
     }
     Debug("");
-    Debug("Initialization: %s", (errorlevel < 2) ? "success!" : "failed!");
+    Debug(STR_INIT, (errorlevel < 2) ? STR_SUCCESS : STR_FAIL);
     
     if (CheckButton(BUTTON_L1|BUTTON_R1) || (errorlevel > 1)) {
-        DebugColor(COLOR_ASK, "(A to %s)", (errorlevel > 1) ? "exit" : "continue");
+        DebugColor(COLOR_ASK, STR_A_TO, (errorlevel > 1) ? STR_EXIT : STR_CONTINUE);
         while (!(InputWait() & BUTTON_A));
     }
     

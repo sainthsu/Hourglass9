@@ -14,6 +14,8 @@
 #define FONT_WIDTH_EXT 6
 #elif defined FONT_GB // special font width
 #define FONT_WIDTH_EXT 7
+#elif defined FONT_UNICODE
+#define FONT_WIDTH_EXT 16
 #else
 #define FONT_WIDTH_EXT 8
 #endif
@@ -65,7 +67,7 @@
 void ClearScreen(unsigned char *screen, int width, int color);
 void ClearScreenFull(bool clear_top, bool clear_bottom);
 
-void DrawCharacter(unsigned char *screen, int character, int x, int y, int color, int bgcolor);
+int DrawCharacter(unsigned char *screen, u32 character, int x, int y, int color, int bgcolor);
 void DrawString(unsigned char *screen, const char *str, int x, int y, int color, int bgcolor);
 void DrawStringF(int x, int y, bool use_top, const char *format, ...);
 void DrawStringFC(int x, int y, bool use_top, u32 color, const char *format, ...);

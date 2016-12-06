@@ -26,7 +26,7 @@ void LoadThemeGfx(const char* filename, bool use_top) {
     snprintf(path, 256, "//%s/%s", USE_THEME, filename);
     #ifdef GFX_ERRORS
     if (!ImportFrameBuffer(path, use_top))
-        DrawStringF(10, 230, true, "Not found: %s", filename);
+        DrawStringF(10, 230, true, STR_NOT_FIND, filename);
     #else
     ImportFrameBuffer(path, use_top);
     #endif
@@ -42,8 +42,8 @@ void LoadThemeGfxLogo(void) {
     LoadThemeGfx(GFX_LOGO, LOGO_TOP);
     #if defined LOGO_TEXT_X && defined LOGO_TEXT_Y
     u32 emunand_state = CheckEmuNand();
-    DrawStringF(LOGO_TEXT_X, LOGO_TEXT_Y -  0, LOGO_TOP, "SD card: %lluMB/%lluMB & %s", RemainingStorageSpace() / 1024 / 1024, TotalStorageSpace() / 1024 / 1024, (emunand_state == EMUNAND_READY) ? "EmuNAND ready" : (emunand_state == EMUNAND_GATEWAY) ? "GW EmuNAND" : (emunand_state == EMUNAND_REDNAND) ? "RedNAND" : (emunand_state > 3) ? "MultiNAND" : "no EmuNAND");
-    DrawStringF(LOGO_TEXT_X, LOGO_TEXT_Y - 10, LOGO_TOP, "Work directory: %s", GetWorkDir());
+    DrawStringF(LOGO_TEXT_X, LOGO_TEXT_Y -  0, LOGO_TOP, STR_SDCARD, RemainingStorageSpace() / 1024 / 1024, TotalStorageSpace() / 1024 / 1024, (emunand_state == EMUNAND_READY) ? "EmuNAND ready" : (emunand_state == EMUNAND_GATEWAY) ? "GW EmuNAND" : (emunand_state == EMUNAND_REDNAND) ? "RedNAND" : (emunand_state > 3) ? "MultiNAND" : "no EmuNAND");
+    DrawStringF(LOGO_TEXT_X, LOGO_TEXT_Y - 10, LOGO_TOP, STR_WORKDIR, GetWorkDir());
     #endif
 }
 
